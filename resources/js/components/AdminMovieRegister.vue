@@ -1,0 +1,151 @@
+<template>
+    <div>
+        <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">映画登録</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="invalid-feedback d-block" v-for="error in nameErrors">
+                            {{ error }}
+                        </div>
+
+                        <div class="invalid-feedback d-block" v-for="error in siteUrlErrors">
+                            {{ error }}
+                        </div>
+
+                        <div class="invalid-feedback d-block" v-for="error in pictureErrors">
+                            {{ error }}
+                        </div>
+
+                        <div class="invalid-feedback d-block" v-for="error in categoryIdErrors">
+                            {{ error }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">映画名</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                                   v-model="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">公式サイトURL</label>
+                            <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                                   v-model="siteUrl">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">映画イメージ</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputFile" @change="fileSelected">
+                                <label class="custom-file-label" for="inputFile" v-model="pictureText">{{ pictureText }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="dropdown">
+                                <label for="exampleInputEmail1">カテゴリー</label>
+                                <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-toggle="dropdown" v-model="categoryText">
+                                    {{ categoryText }}
+                                </button>
+                                <div class="dropdown-menu w-100">
+                                    <a class="dropdown-item" v-for="(category,index) in categories" v-model="categoryId" @click="categorySelected(category)">
+                                        {{ category.attributes.category }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary mx-auto" @click="createData">登録</button>
+                        <button type="button" class="btn btn-outline-secondary mx-auto" data-dismiss="modal">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "AdminMovieRegister",
+        props: ['categories'],
+        data: function () {
+            return {
+                name: '',
+                siteUrl: '',
+                picture: '',
+                categoryId: 0,
+                nameErrors: [],
+                siteUrlErrors: [],
+                pictureErrors: [],
+                categoryIdErrors: [],
+                pictureText: '画像を選択してください',
+                categoryText: 'カテゴリーを選択してください'
+            }
+        },
+        methods: {
+            createData: function () {
+
+                let formData = new FormData();
+                formData.append('name', this.name);
+                formData.append('site_url', this.siteUrl);
+                formData.append('category_id', this.categoryId);
+                formData.append('picture',this.picture);
+
+                let config = {
+                    headers: {
+                        'content-type': 'multipart/form-data',
+                    }
+                };
+                axios.post('/api/v1/movies', formData, config)
+                    .then((response) => {
+                        this.close();
+                        this.$emit('movie-has-registered', response.data.data)
+                    })
+                    .catch((error) => {
+                        this.nameErrors = error.response.data.errors['name'];
+                        this.siteUrlErrors = error.response.data.errors['site_url'];
+                        this.pictureErrors = error.response.data.errors['picture'];
+                        this.categoryIdErrors = error.response.data.errors['category_id'];
+                        console.log(error);
+                    });
+
+            },
+            open: function () {
+                this.name = '';
+                this.siteUrl = '';
+                this.picture = '';
+                this.categoryId = 0;
+                this.pictureText = '画像を選択してください';
+                this.categoryText = 'カテゴリーを選択してください';
+
+                this.nameErrors = [];
+                this.siteUrlErrors = [];
+                this.pictureErrors = [];
+                this.categoryIdErrors = [];
+                $('#registerModal').modal('show');
+            },
+            close: function () {
+                $('#registerModal').modal('hide');
+            },
+            fileSelected: function (event) {
+                this.picture = event.target.files[0];
+                this.pictureText = event.target.files[0].name;
+                //console.log(this.picture.name);
+            },
+            categorySelected: function (category) {
+                this.categoryId = category.id;
+                this.categoryText = category.attributes.category;
+            }
+        }
+
+    }
+</script>
+
+<style scoped>
+
+</style>

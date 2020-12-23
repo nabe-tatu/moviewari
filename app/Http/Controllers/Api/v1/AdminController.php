@@ -9,7 +9,7 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
         //$this->middleware('admin');
     }
 
@@ -18,6 +18,6 @@ class AdminController extends Controller
 //        if ($request->user()->admin === 1){
 //            return view('admin');
 //        }
-        return view('admin');
+       // return response(view('admin'));
     }
 }

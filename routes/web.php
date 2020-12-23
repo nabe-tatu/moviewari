@@ -23,7 +23,7 @@ Route::get('/generalUser', function () {
 
 Auth::routes();//ルーティング追加するメソッド
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->middleware('admin')->name('home');
 
 
 //// TODO::デバッグのとき使える方法

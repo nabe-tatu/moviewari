@@ -15,14 +15,12 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        //dd($request->user()->admin);
-
+        //var_dump('before_middleware');
         if ($request->user()->admin === 1){
             //return redirect('admin');
-            return view('admin');
+            return response(view('admin'));
         }
 
         return $next($request);
-
     }
 }

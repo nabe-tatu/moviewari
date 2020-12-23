@@ -25,6 +25,9 @@ Route::middleware('auth:api')->prefix('/v1')->namespace('Api\V1')->group(functio
     Route::get('/categories','CategoryController@index')->name('categories.index');
     Route::get('/users','UserController@user')->name('users.user');
 
+    Route::get('/example','MovieUserController@Example')->name('movieUser.Example');
+
+
     Route::post('/movies','MovieController@store')->name('movies.store');
     Route::post('/movieUser','MovieUserController@store')->name('movieUser.store');
 

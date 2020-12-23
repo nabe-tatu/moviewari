@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Example;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MovieUserResource;
 use App\Models\Movie;
@@ -11,6 +12,20 @@ use Illuminate\Support\Facades\Auth;
 
 class MovieUserController extends Controller
 {
+//    protected $example;
+//
+//    public function __construct(Example $example)
+//    {
+//        $this->example = $example;
+//    }
+//
+//    public function Example()
+//    {
+//        dd($this->example->DIExampleMethod());
+//    }
+
+
+
     public function generalIndex(Request $request)
     {
         $movieUser = MovieUser::orderBy('date', 'asc')->get();
@@ -19,13 +34,11 @@ class MovieUserController extends Controller
     }
 
 
-    public function index(Request $request)
+    public function index(Request $request, Example $example)
     {
-        //$movieUser = MovieUser::all();
+        //dd($example->DIExampleMethod());
 
         $movieUser = $request->user()->movieUser()->orderBy('date', 'asc')->get();
-
-        //dd($movieUser);
 
         return MovieUserResource::collection($movieUser);
     }
@@ -41,7 +54,6 @@ class MovieUserController extends Controller
 
     public function store(Request $request, MovieUser $movieUser)
     {
-
         $this->validate($request, [
             'movie_id' => 'required',
             'discount' => 'required|integer|min:1|max:10000',
@@ -50,17 +62,15 @@ class MovieUserController extends Controller
             'url' => 'required|string|min:1|max:3000',
         ]);
 
-
-
-        $movieUser = new MovieUser();
+        //$movieUser = new MovieUser();
         $movieUser->discount = $request->input('discount');
         $movieUser->date = $request->input('date');
         $movieUser->time = $request->input('time');
         $movieUser->url = $request->input('url');
         $movieUser->movie_id = $request->input('movie_id');
         $movieUser->user_id = $request->user()->id;
-
         $movieUser->save();
+
         return new MovieUserResource($movieUser);
     }
 

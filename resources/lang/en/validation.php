@@ -118,6 +118,8 @@ return [
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
+    'length' => ':attributesは10文字以内で入力してください',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -145,7 +147,8 @@ return [
     | of "email". This simply helps us make our message more expressive.
     |
     */
-
-    'attributes' => [],
+    'attributes' => [
+        'length' =>  '長さ'
+    ],
 
 ];

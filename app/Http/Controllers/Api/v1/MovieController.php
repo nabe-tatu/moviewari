@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Requests\MovieRequest;
 use App\Models\Movie;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\MovieResource;
@@ -60,12 +61,18 @@ class MovieController extends Controller
 
     }
 
-    public function update(Request $request, Movie $movie)
+    public function update(MovieRequest $request, Movie $movie)
     {
+        $validated = $request->validated();
 
-    //dd($request->input('picture'));
+//        $this->validate($request, [
+//            'name' => 'required|string|min:1|max:100',
+//            'site_url' => 'required|string|min:1|max:3000',
+//            'picture' => 'required',
+//            'category_id' => 'required'
+//        ]);
 
-        $this->validate($request, [
+        $validatedData = $request->validate([
             'name' => 'required|string|min:1|max:100',
             'site_url' => 'required|string|min:1|max:3000',
             'picture' => 'required',

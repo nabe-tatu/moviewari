@@ -24,9 +24,13 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->admin === 1){
-            return view('admin');
-        }
+//        if ($request->user()->admin === 1){
+//            return view('admin');
+//        }
+
+        //dd($request->cookie('laravel_token'));
+
+
         return view('home');
     }
 }
